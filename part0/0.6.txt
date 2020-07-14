@@ -1,0 +1,8 @@
+note over browser:
+User writes note contents on form
+and clicks Submit button.
+
+Spa.js updates the html to include the new note
+end note
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa {note: "note"}
+server-->browser: 201
