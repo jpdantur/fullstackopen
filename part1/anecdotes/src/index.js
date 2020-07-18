@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
+const Header = ({ text }) => <h1>{text}</h1>;
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 const Anecdote = ({ selected, votes }) => (
   <>
@@ -20,14 +21,18 @@ const App = ({ anecdotes }) => {
     votesCopy[selected]++;
     setVotes(votesCopy);
   };
+  const maxIndex = votes.indexOf(Math.max(...votes));
   return (
     <div>
+      <Header text="Anecdote of the day" />
       <Anecdote selected={selected} votes={votes[selected]} />
       <Button
         onClick={() => setSelected(getRandomInt(0, anecdotes.length))}
         text="next anecdote"
       />
       <Button onClick={() => vote(selected)} text="vote" />
+      <Header text="Anecdote with most votes" />
+      <Anecdote selected={maxIndex} votes={votes[maxIndex]} />
     </div>
   );
 };
