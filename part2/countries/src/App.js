@@ -12,16 +12,18 @@ const Find = ({ findTerm, onChange }) => (
 const Countries = ({ countries, setFindTerm }) => {
   return (
     <div>
-      {countries.length > 1
-        ? countries.map((country) => (
-            <div key={country.name}>
-              {country.name}
-              <button onClick={() => setFindTerm(country.name)}>show</button>
-            </div>
-          ))
-        : countries.map((country) => (
-            <Country key={country.name} country={country} />
-          ))}
+      {countries.length > 1 ? (
+        countries.map((country) => (
+          <div key={country.name}>
+            {country.name}
+            <button onClick={() => setFindTerm(country.name)}>show</button>
+          </div>
+        ))
+      ) : countries.length === 0 ? (
+        <div>Loading country...</div>
+      ) : (
+        <Country country={countries[0]} />
+      )}
     </div>
   );
 };
