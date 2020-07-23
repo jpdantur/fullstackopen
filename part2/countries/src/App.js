@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Country from "./components/Country";
 
 const Find = ({ findTerm, onChange }) => (
   <div>
@@ -8,29 +9,15 @@ const Find = ({ findTerm, onChange }) => (
   </div>
 );
 
-const Country = ({ country }) => {
-  return (
-    <div>
-      <h1>{country.name}</h1>
-      <div>capital {country.capital}</div>
-      <div>population {country.population}</div>
-      <h2>languages</h2>
-      <ul>
-        {country.languages.map((language) => (
-          <li key={language.name}>{language.name}</li>
-        ))}
-      </ul>
-      <img src={country.flag} alt="" width="100" height="100" />
-    </div>
-  );
-};
-
-const Countries = ({ countries, findTerm }) => {
+const Countries = ({ countries, setFindTerm }) => {
   return (
     <div>
       {countries.length > 1
         ? countries.map((country) => (
-            <div key={country.name}>{country.name}</div>
+            <div key={country.name}>
+              {country.name}
+              <button onClick={() => setFindTerm(country.name)}>show</button>
+            </div>
           ))
         : countries.map((country) => (
             <Country key={country.name} country={country} />
@@ -62,7 +49,7 @@ const App = () => {
       {filteredCountries.length > 10 ? (
         <div>Too many matches, specify another filter</div>
       ) : (
-        <Countries countries={filteredCountries} findTerm={findTerm} />
+        <Countries countries={filteredCountries} setFindTerm={setFindTerm} />
       )}
     </div>
   );
