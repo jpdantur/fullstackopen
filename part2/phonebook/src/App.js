@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import Person from "./components/Person";
+import personService from "./services/persons";
 
 const Filter = ({ searchTerm, onChange }) => (
   <div>
@@ -36,23 +37,16 @@ const Persons = ({ persons }) => (
   </div>
 );
 
-const Person = ({ name, number }) => (
-  <div>
-    {name} {number}
-  </div>
-);
-
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const personUrl = "http://localhost:3001/persons";
 
   useEffect(() => {
-    axios.get(personUrl).then((response) => {
-      setPersons(response.data);
-    });
+    personService
+      .getAll()
+      .then((returnedPersons) => setPersons(returnedPersons));
   }, []);
 
   const handleSearchTermChange = (event) => {
@@ -70,14 +64,14 @@ const App = () => {
   const handleAddPerson = (event) => {
     event.preventDefault();
     if (!persons.some((person) => person.name === newName)) {
-      axios
-        .post(personUrl, { name: newName, number: newNumber })
-        .then((response) => {
+      personService
+        .create({ name: newName, number: newNumber })
+        .then((returnedPerson) => {
           setPersons(
             persons.concat({
-              name: response.data.name,
-              number: response.data.number,
-              id: response.data.id,
+              name: returnedPerson.name,
+              number: returnedPerson.number,
+              id: returnedPerson.id,
             })
           );
           setNewName("");
