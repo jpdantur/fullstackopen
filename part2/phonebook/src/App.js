@@ -31,7 +31,7 @@ const PersonForm = ({
 const Persons = ({ persons }) => (
   <div>
     {persons.map((person) => (
-      <Person key={person.name} name={person.name} number={person.number} />
+      <Person key={person.id} name={person.name} number={person.number} />
     ))}
   </div>
 );
@@ -47,9 +47,10 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const personUrl = "http://localhost:3001/persons";
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    axios.get(personUrl).then((response) => {
       setPersons(response.data);
     });
   }, []);
@@ -69,12 +70,22 @@ const App = () => {
   const handleAddPerson = (event) => {
     event.preventDefault();
     if (!persons.some((person) => person.name === newName)) {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
+      axios
+        .post(personUrl, { name: newName, number: newNumber })
+        .then((response) => {
+          setPersons(
+            persons.concat({
+              name: response.data.name,
+              number: response.data.number,
+              id: response.data.id,
+            })
+          );
+          setNewName("");
+          setNewNumber("");
+        });
     } else {
       window.alert(`${newName} is already added to phonebook`);
     }
-    setNewName("");
-    setNewNumber("");
   };
   return (
     <div>
