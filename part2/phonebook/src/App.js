@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const Filter = ({ searchTerm, onChange }) => (
@@ -48,6 +49,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService
@@ -68,8 +71,12 @@ const App = () => {
   };
   const handleDelete = (id, name) => () => {
     if (window.confirm(`Delete ${name}?`)) {
-      personService.remove(id).then((removedPerson) => {
+      personService.remove(id).then(() => {
         setPersons(persons.filter((person) => person.id !== id));
+        setSuccessMessage(`Deleted ${name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
       });
     }
   };
@@ -90,6 +97,10 @@ const App = () => {
           );
           setNewName("");
           setNewNumber("");
+          setSuccessMessage(`Added ${returnedPerson.name}`);
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
         });
     } else {
       if (
@@ -104,6 +115,8 @@ const App = () => {
             number: newNumber,
           })
           .then((updatedPerson) => {
+            setNewName("");
+            setNewNumber("");
             setPersons(
               persons.map((person) => ({
                 id: person.id,
@@ -114,6 +127,10 @@ const App = () => {
                     : person.number,
               }))
             );
+            setSuccessMessage(`Updated ${updatedPerson.name}`);
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
           });
       }
     }
@@ -121,6 +138,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification status="error" message={errorMessage} />
+      <Notification status="success" message={successMessage} />
       <Filter searchTerm={searchTerm} onChange={handleSearchTermChange} />
       <h3>add a new</h3>
       <PersonForm
