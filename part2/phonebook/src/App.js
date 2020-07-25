@@ -131,6 +131,16 @@ const App = () => {
             setTimeout(() => {
               setSuccessMessage(null);
             }, 5000);
+          })
+          .catch((error) => {
+            setNewName("");
+            setNewNumber("");
+            setErrorMessage(
+              `Information of ${newName} has already been removed from server`
+            );
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
           });
       }
     }
