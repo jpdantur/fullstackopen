@@ -101,6 +101,14 @@ const App = () => {
           setTimeout(() => {
             setSuccessMessage(null);
           }, 5000);
+        })
+        .catch((error) => {
+          setNewName("");
+          setNewNumber("");
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
         });
     } else {
       if (
@@ -135,9 +143,7 @@ const App = () => {
           .catch((error) => {
             setNewName("");
             setNewNumber("");
-            setErrorMessage(
-              `Information of ${newName} has already been removed from server`
-            );
+            setErrorMessage(error.response.data.error);
             setTimeout(() => {
               setErrorMessage(null);
             }, 5000);
