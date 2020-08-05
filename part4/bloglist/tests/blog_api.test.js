@@ -26,6 +26,13 @@ test("all blogs are returned", async () => {
   expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
+test("all blogs contain id", async () => {
+  const response = await api.get("/api/blogs");
+  response.body.forEach((element) => {
+    expect(element.id).toBeDefined();
+  });
+});
+
 test("a specific blog is within the returned blogs", async () => {
   const response = await api.get("/api/blogs");
 
@@ -42,7 +49,7 @@ test("a valid blog can be added", async () => {
     likes: 3,
   };
 
-  await api
+  const response = await api
     .post("/api/blogs")
     .send(newBlog)
     .expect(201)
@@ -51,8 +58,31 @@ test("a valid blog can be added", async () => {
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
-  const titles = blogsAtEnd.map((r) => r.title);
-  expect(titles).toContain("async/await simplifies making async calls");
+  expect(response.body).toMatchObject(newBlog);
+});
+
+test("a new blog without likes property has 0 likes", async () => {
+  const newBlog = {
+    title: "async/await simplifies making async calls",
+    author: "Pepe Argento",
+    url: "http://pepeargento.com",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  expect(response.body.likes).toBe(0);
+});
+
+test("a blog without title and url cannot be added", async () => {
+  const newBlog = {
+    author: "Pepe Argento",
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
 });
 
 afterAll(() => {
