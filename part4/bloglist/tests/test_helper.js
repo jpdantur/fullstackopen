@@ -1,3 +1,4 @@
+"use strict";
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
@@ -16,6 +17,12 @@ const initialBlogs = [
     likes: 5,
   },
 ];
+
+const initialUser = {
+  username: "root",
+  name: "Root",
+  password: "root",
+};
 
 const nonExistingId = async () => {
   const blog = new Blog({ title: "willremovethissoon" });
@@ -37,6 +44,7 @@ const usersInDb = async () => {
 
 module.exports = {
   initialBlogs,
+  initialUser,
   nonExistingId,
   blogsInDb,
   usersInDb,
