@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setURL] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -36,6 +39,19 @@ const App = () => {
       setPassword("");
     } catch (exception) {
       console.log("exception in login", exception);
+    }
+  };
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+    try {
+      const blog = await blogService.create({ title, author, url });
+      setBlogs(blogs.concat(blog));
+      setTitle("");
+      setAuthor("");
+      setURL("");
+    } catch (exception) {
+      console.log("exception adding blog", exception);
     }
   };
 
@@ -82,7 +98,43 @@ const App = () => {
           logout
         </button>
       </p>
-
+      <h2>create new</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title:
+          <input
+            type="text"
+            value={title}
+            name="Title"
+            onChange={({ target }) => {
+              setTitle(target.value);
+            }}
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type="text"
+            value={author}
+            name="Author"
+            onChange={({ target }) => {
+              setAuthor(target.value);
+            }}
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type="text"
+            value={url}
+            name="URL"
+            onChange={({ target }) => {
+              setURL(target.value);
+            }}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
