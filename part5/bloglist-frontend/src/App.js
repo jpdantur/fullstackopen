@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setURL] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -38,7 +41,12 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      console.log("exception in login", exception);
+      setUsername("");
+      setPassword("");
+      setErrorMessage("wrong username or password");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     }
   };
 
@@ -50,14 +58,25 @@ const App = () => {
       setTitle("");
       setAuthor("");
       setURL("");
+      setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     } catch (exception) {
-      console.log("exception adding blog", exception);
+      setTitle("");
+      setAuthor("");
+      setURL("");
+      setErrorMessage("error adding blog");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
     }
   };
 
   if (user === null) {
     return (
       <div>
+        <Notification status="error" message={errorMessage} />
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -86,6 +105,8 @@ const App = () => {
 
   return (
     <div>
+      <Notification status="error" message={errorMessage} />
+      <Notification status="success" message={successMessage} />
       <h2>blogs</h2>
       <p>
         {user.name} logged in
