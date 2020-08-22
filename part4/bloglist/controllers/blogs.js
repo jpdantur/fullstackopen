@@ -44,31 +44,12 @@ blogsRouter.delete("/:id", async (request, response) => {
 });
 
 blogsRouter.put("/:id", async (request, response) => {
-  const token = request.token;
-  const decodedToken = jwt.verify(token, config.SECRET);
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: "token missing or invalid" });
-  }
-  const blog = await Blog.findById(request.params.id);
-  const user = await User.findById(decodedToken.id);
-  if (blog.user.toString() !== user._id.toString()) {
-    return response.status(401).json({ error: "incorrect user" });
-  }
-  const body = request.body;
-  const updateBlogInfo = {
-    title: body.title,
-    author: body.author,
-    likes: body.likes,
-    url: body.url,
-  };
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id,
-    updateBlogInfo,
-    {
-      new: true,
-    }
-  );
-  return response.json(updatedBlog);
+  const blog = request.body;
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
+  response.json(updatedBlog.toJSON());
 });
 
 module.exports = blogsRouter;
