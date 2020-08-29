@@ -1,30 +1,30 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 const Blog = ({ blog, updateBlog, removeBlog, username }) => {
-  const [visible, setVisible] = useState(false);
-  const showWhenVisible = { display: visible ? "" : "none" };
+  const [visible, setVisible] = useState(false)
+  const showWhenVisible = { display: visible ? '' : 'none' }
   const showWhenUserIsLogged = {
-    display: username === blog.user.username ? "" : "none",
-  };
+    display: username === blog.user.username ? '' : 'none',
+  }
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title}{" "}
+        {blog.title}{' '}
         <button onClick={() => setVisible(!visible)}>
-          {visible ? "hide" : "view"}
+          {visible ? 'hide' : 'view'}
         </button>
       </div>
       <div style={showWhenVisible}>
         <div>{blog.url}</div>
         <div>
-          likes {blog.likes}{" "}
+          likes {blog.likes}{' '}
           <button
             onClick={() => {
               updateBlog(blog.id, {
@@ -32,7 +32,7 @@ const Blog = ({ blog, updateBlog, removeBlog, username }) => {
                 likes: blog.likes + 1,
                 author: blog.author,
                 url: blog.url,
-              });
+              })
             }}
           >
             like
@@ -46,7 +46,7 @@ const Blog = ({ blog, updateBlog, removeBlog, username }) => {
               if (
                 window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
               ) {
-                removeBlog(blog.id);
+                removeBlog(blog.id)
               }
             }}
           >
@@ -55,7 +55,7 @@ const Blog = ({ blog, updateBlog, removeBlog, username }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog
