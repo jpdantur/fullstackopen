@@ -14,31 +14,28 @@ const Blog = ({ blog, updateBlog, removeBlog, username }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title}{' '}
+    <div style={blogStyle} className='blog'>
+      <div className='blogTitle'>
+        {blog.title} {blog.author}
         <button onClick={() => setVisible(!visible)}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='blogDetails'>
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}{' '}
           <button
             onClick={() => {
               updateBlog(blog.id, {
-                title: blog.title,
                 likes: blog.likes + 1,
-                author: blog.author,
-                url: blog.url,
               })
             }}
           >
             like
           </button>
         </div>
-        <div>{blog.author}</div>
+        <div>{blog.user.name}</div>
         <div>
           <button
             style={showWhenUserIsLogged}
