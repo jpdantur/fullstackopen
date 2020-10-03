@@ -5,23 +5,20 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
+import { createBlog, updateBlog, removeBlog, getAllBlogs} from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) =>
-        setBlogs(blogs.sort((blog1, blog2) => blog2.likes - blog1.likes))
-      )
-  }, [])
+    dispatch(getAllBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -53,37 +50,28 @@ const App = () => {
     }
   }
 
-  const createBlog = async (blog) => {
+  const handleCreateBlog = async (blog) => {
     try {
       blogFormRef.current.toggleVisibility()
-      const createdBlog = await blogService.create(blog)
-      setBlogs(blogs.concat(createdBlog))
-      dispatch(setSuccessNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`, 5))
+      dispatch(createBlog(blog))
+      dispatch(setSuccessNotification(`a new blog added`, 5))
     } catch (exception) {
       dispatch(setErrorNotification('error adding blog',5))
     }
   }
 
-  const removeBlog = async (id) => {
+  const handleRemoveBlog = async (id) => {
     try {
-      await blogService.remove(id)
-      setBlogs(blogs.filter((blog) => blog.id !== id))
+      dispatch(removeBlog(id))
       dispatch(setSuccessNotification('blog removed', 5))
     } catch (exception) {
       dispatch(setErrorNotification('error removing blog', 5))
     }
   }
-  const updateBlog = async (id, blog) => {
+  const handleUpdateBlog = async (id, blog) => {
     try {
-      const updatedBlog = await blogService.update(id, blog)
-      setBlogs(
-        blogs
-          .map((blog) =>
-            blog.id === id ? { ...updatedBlog, user: blog.user } : blog
-          )
-          .sort((blog1, blog2) => blog2.likes - blog1.likes)
-      )
-      dispatch(setSuccessNotification(`blog ${updatedBlog.title} by ${updatedBlog.author} updated`, 5))
+      dispatch(updateBlog(id, blog))
+      dispatch(setSuccessNotification(`blog updated`, 5))
     } catch (exception) {
       dispatch(setErrorNotification('error updating blog'))
     }
@@ -137,14 +125,14 @@ const App = () => {
         </button>
       </p>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm createBlog={createBlog} />
+        <BlogForm createBlog={handleCreateBlog} />
       </Togglable>
       {blogs.map((blog) => (
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlog={updateBlog}
-          removeBlog={removeBlog}
+          updateBlog={handleUpdateBlog}
+          removeBlog={handleRemoveBlog}
           username={user.username}
         />
       ))}
