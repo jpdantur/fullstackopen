@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -8,12 +7,13 @@ import BlogForm from './components/BlogForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
 import { createBlog, updateBlog, removeBlog, getAllBlogs} from './reducers/blogReducer'
+import { login, logout } from './reducers/loginReducer'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.login)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -24,10 +24,9 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch(login(user))
     }
-  }, [])
+  }, [dispatch])
 
   const blogFormRef = useRef()
 
@@ -38,9 +37,7 @@ const App = () => {
         username,
         password,
       })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
+      dispatch(login(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -117,8 +114,7 @@ const App = () => {
         {user.name} logged in
         <button
           onClick={() => {
-            window.localStorage.clear()
-            setUser(null)
+            dispatch(logout())
           }}
         >
           logout
