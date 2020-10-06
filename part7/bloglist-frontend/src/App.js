@@ -4,10 +4,12 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import UserList from './components/UserList'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
 import { createBlog, updateBlog, removeBlog, getAllBlogs} from './reducers/blogReducer'
 import { login, logout } from './reducers/loginReducer'
+import { Switch, Route } from 'react-router-dom'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -123,15 +125,22 @@ const App = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={handleCreateBlog} />
       </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateBlog={handleUpdateBlog}
-          removeBlog={handleRemoveBlog}
-          username={user.username}
-        />
-      ))}
+      <Switch>
+        <Route path="/users">
+          <UserList />
+        </Route>
+        <Route path="/">
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={handleUpdateBlog}
+              removeBlog={handleRemoveBlog}
+              username={user.username}
+            />
+          ))}
+        </Route>
+      </Switch>
     </div>
   )
 }
