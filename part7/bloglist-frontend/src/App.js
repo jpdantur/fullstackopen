@@ -4,7 +4,9 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import BlogDetails from './components/BlogDetails'
 import UserList from './components/UserList'
+import User from './components/User'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
 import { createBlog, updateBlog, removeBlog, getAllBlogs} from './reducers/blogReducer'
@@ -126,6 +128,12 @@ const App = () => {
         <BlogForm createBlog={handleCreateBlog} />
       </Togglable>
       <Switch>
+        <Route path="/blogs/:id">
+          <BlogDetails updateBlog={handleUpdateBlog}/>
+        </Route>
+        <Route path="/users/:id">
+          <User />
+        </Route>
         <Route path="/users">
           <UserList />
         </Route>

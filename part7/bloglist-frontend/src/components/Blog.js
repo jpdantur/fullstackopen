@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-const Blog = ({ blog, updateBlog, removeBlog, username }) => {
-  const [visible, setVisible] = useState(false)
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  const showWhenUserIsLogged = {
-    display: username === blog.user.username ? '' : 'none',
-  }
+import React from 'react'
+import { Link } from 'react-router-dom'
+
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -16,40 +13,7 @@ const Blog = ({ blog, updateBlog, removeBlog, username }) => {
   return (
     <div style={blogStyle} className='blog'>
       <div className='blogTitle'>
-        {blog.title} {blog.author}
-        <button onClick={() => setVisible(!visible)}>
-          {visible ? 'hide' : 'view'}
-        </button>
-      </div>
-      <div style={showWhenVisible} className='blogDetails'>
-        <div>{blog.url}</div>
-        <div>
-          likes {blog.likes}{' '}
-          <button
-            onClick={() => {
-              updateBlog(blog.id, {
-                likes: blog.likes + 1,
-              })
-            }}
-          >
-            like
-          </button>
-        </div>
-        <div>{blog.user.name}</div>
-        <div>
-          <button
-            style={showWhenUserIsLogged}
-            onClick={() => {
-              if (
-                window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-              ) {
-                removeBlog(blog.id)
-              }
-            }}
-          >
-            remove
-          </button>
-        </div>
+        <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
       </div>
     </div>
   )
