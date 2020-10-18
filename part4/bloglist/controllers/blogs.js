@@ -52,4 +52,14 @@ blogsRouter.put("/:id", async (request, response) => {
   response.json(updatedBlog.toJSON());
 });
 
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const comment = request.body.comment;
+  const blog = await Blog.findById(request.params.id);
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {comments: blog.comments ? blog.comments.concat(comment) : [comment]}, {
+    new: true,
+  });
+  response.json(updatedBlog.toJSON());
+})
+
 module.exports = blogsRouter;

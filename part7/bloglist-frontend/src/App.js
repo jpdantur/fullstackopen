@@ -9,9 +9,9 @@ import UserList from './components/UserList'
 import User from './components/User'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSuccessNotification, setErrorNotification } from './reducers/notificationReducer'
-import { createBlog, updateBlog, removeBlog, getAllBlogs} from './reducers/blogReducer'
+import { createBlog, updateBlog, removeBlog, getAllBlogs, commentBlog} from './reducers/blogReducer'
 import { login, logout } from './reducers/loginReducer'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const blogs = useSelector(state => state.blogs)
@@ -23,6 +23,10 @@ const App = () => {
   useEffect(() => {
     dispatch(getAllBlogs())
   }, [dispatch])
+
+  const padding = {
+    paddingRight: 5
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -77,6 +81,14 @@ const App = () => {
       dispatch(setErrorNotification('error updating blog'))
     }
   }
+  const handleCommentBlog = async (id, comment) => {
+    try {
+      dispatch(commentBlog(id, comment))
+      dispatch(setSuccessNotification(`blog updated`, 5))
+    } catch (exception) {
+      dispatch(setErrorNotification('error updating blog'))
+    }
+  }
 
   if (user === null) {
     return (
@@ -113,8 +125,9 @@ const App = () => {
   return (
     <div>
       <Notification />
-      <h2>blogs</h2>
-      <p>
+      <div>
+        <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
         {user.name} logged in
         <button
           onClick={() => {
@@ -123,13 +136,14 @@ const App = () => {
         >
           logout
         </button>
-      </p>
+      </div>
+      <h2>blogs</h2>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={handleCreateBlog} />
       </Togglable>
       <Switch>
         <Route path="/blogs/:id">
-          <BlogDetails updateBlog={handleUpdateBlog}/>
+          <BlogDetails updateBlog={handleUpdateBlog} commentBlog={handleCommentBlog}/>
         </Route>
         <Route path="/users/:id">
           <User />
