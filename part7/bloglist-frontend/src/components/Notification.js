@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Alert } from '@material-ui/lab'
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
@@ -7,7 +8,7 @@ const Notification = () => {
     return null
   }
 
-  return <div className={notification.status}> {notification.message} </div>
+  return <Alert severity={notification.status}> {notification.message} </Alert>
 }
 
 export default Notification

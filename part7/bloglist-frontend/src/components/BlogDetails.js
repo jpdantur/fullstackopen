@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router-dom' 
+import {
+  Button
+} from '@material-ui/core'
 
 
 const BlogDetails = ({ updateBlog, commentBlog }) => {
@@ -17,7 +20,7 @@ const BlogDetails = ({ updateBlog, commentBlog }) => {
             <div>{blog.url}</div>
             <div>
                 likes {blog.likes}{' '}
-                <button
+                <Button
                 onClick={() => {
                 updateBlog(blog.id, {
                 likes: blog.likes + 1,
@@ -25,7 +28,7 @@ const BlogDetails = ({ updateBlog, commentBlog }) => {
             }}
           >
             like
-          </button>
+          </Button>
         </div>
         <div>added by {blog.user.name}</div>
         <div>
@@ -42,7 +45,7 @@ const BlogDetails = ({ updateBlog, commentBlog }) => {
             onChange={({target}) => {
               setComment(target.value)
             }}/>
-            <button id="add-comment" type="submit">add comment</button>
+            <Button id="add-comment" type="submit">add comment</Button>
           </form>
           <ul>
           {blog.comments.map((comment, ix) => (
